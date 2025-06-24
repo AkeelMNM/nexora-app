@@ -1,97 +1,56 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# NEXORA
 
-# Getting Started
+## Dev Guide
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+Prefer yarn over npm! use `yarn add ...` instead of `npm i ... --save` to add new packages
+### Dev Env
 
-## Step 1: Start Metro
-
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
-
-To start the Metro dev server, run the following command from the root of your React Native project:
-
-```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
+```
+node: v22.16.0
+npm: 10.9.2
+IDE: VS Code
 ```
 
-## Step 2: Build and run your app
+### Code Style
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+Styling rules are defined in `.prettierrc.js`
+At the time you commit the code, the linter will run and output any errors. Please fix all before committing. But you can setup VS Code to lint dynamically.
 
-### Android
+#### Setup VS Code for dynamic linting
+1. First, install the ESLint command-line tool. `npm install -g eslint`
+2. Then, install the [ESLint Extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) in VS Code 
 
-```sh
-# Using npm
-npm run android
+### Project Setup
+1. [Setup react native development environment in native mode](https://reactnative.dev/docs/environment-setup) (Not expo mode)
+2. `git clone ...`
+3. `cd nexora-app`
+4. `yarn`
 
-# OR using Yarn
-yarn android
-```
 
-### iOS
+### Running on iOS Simulator/Device (dev version)
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+1. `cd ios`
+2. open `nexora.xcworkspace` from Xcode
+3. make sure you have dev certificate from your Apple Dev Team in your keychain (unless automatic signing)
+4. select connected iOS device or simulator
+5. run
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
 
-```sh
-bundle install
-```
+### Running on Android (dev version)
 
-Then, and every time you update your native dependencies, run:
+1. connect device or open emulator
+2. `yarn android`
 
-```sh
-bundle exec pod install
-```
+### Build and install on Android Device (release version)
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+ 1. `yarn android:install`
 
-```sh
-# Using npm
-npm run ios
+There are more npm (yarn) scripts writtern in package.json for shake, reload, start packager... feel free to use them and add more :D 
 
-# OR using Yarn
-yarn ios
-```
+### Make a new release
+TODO using  [react-native-version](https://github.com/stovmascript/react-native-version)
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+`npm version major.minor.patch` will do following (ex: npm version 1.0.3)
+1. upgrade npm version, commit and tag version change
+2. upgrade android, ios versions and ammend to above commit
+3. build android release version and install in the device

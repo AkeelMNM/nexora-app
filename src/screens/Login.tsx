@@ -16,9 +16,34 @@ function Login() {
 	const navigation = useNavigation<LoginScreenNavigationProp>();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [errorMsg, setErrorMsg] = useState<string | null>(null);
 	// const [hidePassword, setHidePassword] = useState(true);
 
+	function validateInput() {
+		if (email === '' && password === '') {
+			setErrorMsg('Please enter email and password');
+			return false;
+		}
+
+		if (!email || email === '') {
+			setErrorMsg('Please enter email');
+			return false;
+		}
+
+		if (!password || password === '') {
+			setErrorMsg('Please enter password');
+			return false;
+		}
+
+		return true;
+	}
+
 	function onLogin() {
+		const isInputValidated = validateInput();
+		if (!isInputValidated) {
+			return;
+		}
+
 		navigation.navigate('NewsFeed');
 	}
 
@@ -50,9 +75,11 @@ function Login() {
 				</Text>
 			</TouchableOpacity>
 			<Button title={'Login'} onPress={onLogin} />
-			{/* <View>
-				<ErrorText isVisible={} />
-			</View> */}
+			{errorMsg && (
+				<View style={styles.errorContainer}>
+					<ErrorText isVisible={!errorMsg} errorText={errorMsg} />
+				</View>
+			)}
 			<View style={styles.orContainer}>
 				<View style={styles.line} />
 				<Text variant="body" color="black">
@@ -93,6 +120,9 @@ const styles = StyleSheet.create({
 	line: {
 		borderBottomColor: 'black',
 		borderBottomWidth: StyleSheet.hairlineWidth,
+	},
+	errorContainer: {
+		justifyContent: 'center',
 	},
 	bottomContainer: {
 		flexDirection: 'column',
