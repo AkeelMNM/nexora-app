@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 		paddingRight: 12,
 		paddingTop: 14,
 		paddingBottom: 14,
-		borderRadius: 2,
+		borderRadius: 5,
 		width: '100%',
 		fontSize: 17,
 		fontWeight: 'normal',

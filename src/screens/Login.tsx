@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamsList } from '../navigation/RootStackParamsList';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Text, TextInputField } from '../components';
 import { ErrorText } from '../components/ErrorText';
+import { COLORS } from '../assets/theme/colors';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<
 	RootStackParamsList,
@@ -12,7 +13,6 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 function Login() {
-	//TODO: Left on Error handling part how to show the error message
 	const navigation = useNavigation<LoginScreenNavigationProp>();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -48,84 +48,112 @@ function Login() {
 	}
 
 	return (
-		<View style={styles.mainContainer}>
-			<Text variant="title" color="main" style={styles.appText}>
-				NEXORA
-			</Text>
-			<Text variant="headerOne" color="black">
-				Sign In
-			</Text>
-			<Text variant="body" color="black">
-				Stay connected with the people
-			</Text>
-			<TextInputField
-				placeholder={'Email or Phone'}
-				inputFieldType={'full'}
-				onChangeText={text => setEmail(text)}
-			/>
-			<TextInputField
-				placeholder={'Password'}
-				inputFieldType={'full'}
-				secureTextEntry={true}
-				onChangeText={text => setPassword(text)}
-			/>
-			<TouchableOpacity activeOpacity={0.7} style={styles.forgotPassword}>
-				<Text variant="body" color="black">
-					Forgot Password?
+		<SafeAreaView style={styles.safeAreaContainer}>
+			<View style={styles.mainContainer}>
+				<Text variant="title" color="main" style={styles.appText}>
+					NEXORA
 				</Text>
-			</TouchableOpacity>
-			<Button title={'Login'} onPress={onLogin} />
-			{errorMsg && (
-				<View style={styles.errorContainer}>
-					<ErrorText isVisible={!errorMsg} errorText={errorMsg} />
+				<View style={styles.signInTextContainer}>
+					<Text variant="headerOne" color="black">
+						Sign In
+					</Text>
+					<Text variant="body" color="black">
+						Stay connected with the people
+					</Text>
 				</View>
-			)}
-			<View style={styles.orContainer}>
-				<View style={styles.line} />
-				<Text variant="body" color="black">
-					or
-				</Text>
-				<View style={styles.line} />
-			</View>
-			<View style={styles.bottomContainer}>
-				<Text variant="body" color="black">
-					New to Nexora?
-				</Text>
+				<View style={styles.inputContainer}>
+					<TextInputField
+						placeholder={'Email or Phone'}
+						inputFieldType={'full'}
+						onChangeText={text => setEmail(text)}
+					/>
+					<TextInputField
+						placeholder={'Password'}
+						inputFieldType={'full'}
+						secureTextEntry={true}
+						onChangeText={text => setPassword(text)}
+					/>
+				</View>
 				<TouchableOpacity
 					activeOpacity={0.7}
 					style={styles.forgotPassword}>
-					<Text variant="body" color="black">
-						Join now
+					<Text variant="label" color="black">
+						Forgot Password?
 					</Text>
 				</TouchableOpacity>
+				<Button title={'Login'} onPress={onLogin} />
+				{errorMsg && (
+					<View style={styles.errorContainer}>
+						<ErrorText isVisible={!errorMsg} errorText={errorMsg} />
+					</View>
+				)}
+				<View style={styles.orContainer}>
+					<View style={styles.line} />
+					<Text variant="body" color="black">
+						or
+					</Text>
+					<View style={styles.line} />
+				</View>
+				<View style={styles.bottomContainer}>
+					<Text variant="label" color="black">
+						New to Nexora?
+					</Text>
+					<TouchableOpacity
+						activeOpacity={0.7}
+						style={styles.joinText}>
+						<Text variant="label" color="black">
+							Join now
+						</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
-		</View>
+		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
+	safeAreaContainer: {
+		flex: 1,
+	},
 	mainContainer: {
 		flex: 1,
 		padding: 16,
 	},
 	appText: {
-		paddingHorizontal: 20,
+		paddingVertical: 20,
+		color: COLORS.main,
 	},
 	forgotPassword: {
-		marginHorizontal: 5,
+		marginBottom: 10,
 	},
 	orContainer: {
-		flexDirection: 'column',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginVertical: 10,
 	},
 	line: {
-		borderBottomColor: 'black',
-		borderBottomWidth: StyleSheet.hairlineWidth,
+		height: 1,
+		backgroundColor: COLORS.main,
+		width: '35%',
+		marginHorizontal: 10,
 	},
 	errorContainer: {
 		justifyContent: 'center',
 	},
 	bottomContainer: {
-		flexDirection: 'column',
+		flexDirection: 'row',
+		justifyContent: 'center',
+	},
+	joinText: {
+		marginLeft: 5,
+	},
+	signInTextContainer: {
+		marginVertical: 10,
+	},
+	inputContainer: {
+		marginVertical: 10,
+		rowGap: 10,
 	},
 });
 

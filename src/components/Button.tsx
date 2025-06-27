@@ -60,11 +60,12 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: COLORS.main,
+		borderRadius: 25,
 	},
 	text: {
 		fontWeight: 'bold',
 		fontSize: 17,
-		color: '#000000',
+		color: '#FFFFFF',
 		textAlign: 'center',
 	},
 	activityIndicator: {

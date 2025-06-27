@@ -1,4 +1,4 @@
 export const COLORS = {
-	main: '',
+	main: '#2F3C7E',
 	errorRed: '',
 };
