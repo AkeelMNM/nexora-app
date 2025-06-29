@@ -46,7 +46,7 @@ const TextInputField = forwardRef<TextInput, CustomTextInputProps>(
 
 const styles = StyleSheet.create({
 	inputField: {
-		color: '#fff',
+		color: '#000000',
 		borderWidth: 1,
 		borderColor: '#393939',
 		paddingLeft: 12,
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
 		borderBottomColor: '#666666',
 		fontSize: 15,
 		paddingHorizontal: 0,
-		color: '#666666',
+		color: '#000000',
 	},
 });
 

@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamsList } from '../navigation/RootStackParamsList';
 import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Button, Text, TextInputField } from '../components';
+import { Button, CustomIcon, Text, TextInputField } from '../components';
 import { ErrorText } from '../components/ErrorText';
 import { COLORS } from '../assets/theme/colors';
 
@@ -94,12 +94,27 @@ function Login() {
 					</Text>
 					<View style={styles.line} />
 				</View>
+				<View style={styles.signInOptionContainer}>
+					<Button
+						title={'Continue with Google'}
+						style={styles.signInOptionButton}
+						color={'white'}
+						icon={<CustomIcon name={'google'} color="black" />}
+					/>
+					<Button
+						title={'Sign in with Apple'}
+						color={'white'}
+						style={styles.signInOptionButton}
+						icon={<CustomIcon name={'apple'} color="black" />}
+					/>
+				</View>
 				<View style={styles.bottomContainer}>
 					<Text variant="label" color="black">
 						New to Nexora?
 					</Text>
 					<TouchableOpacity
 						activeOpacity={0.7}
+						onPress={() => navigation.navigate('CreateAccount')}
 						style={styles.joinText}>
 						<Text variant="label" color="black">
 							Join now
@@ -144,6 +159,7 @@ const styles = StyleSheet.create({
 	bottomContainer: {
 		flexDirection: 'row',
 		justifyContent: 'center',
+		marginTop: 15,
 	},
 	joinText: {
 		marginLeft: 5,
@@ -154,6 +170,19 @@ const styles = StyleSheet.create({
 	inputContainer: {
 		marginVertical: 10,
 		rowGap: 10,
+	},
+	signInOptionContainer: {
+		rowGap: 10,
+	},
+	signInOptionButton: {
+		width: '100%',
+		height: 50,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: '#FFFFFF',
+		borderRadius: 25,
+		flexDirection: 'row',
+		borderWidth: 0.5,
 	},
 });
 

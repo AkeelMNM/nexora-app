@@ -4,6 +4,7 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	TouchableOpacityProps,
+	View,
 } from 'react-native';
 import { Text } from './Text';
 import { COLORS } from '../assets/theme/colors';
@@ -12,9 +13,10 @@ interface ButtonProps extends TouchableOpacityProps {
 	title: string;
 	color?: string;
 	isLoading?: boolean;
+	icon?: React.ReactNode;
 }
 
-function Button({ title, color, isLoading, ...props }: ButtonProps) {
+function Button({ title, color, isLoading, icon, ...props }: ButtonProps) {
 	const getButtonColor = () => {
 		switch (color) {
 			case 'main':
@@ -40,6 +42,7 @@ function Button({ title, color, isLoading, ...props }: ButtonProps) {
 		<TouchableOpacity
 			activeOpacity={0.7}
 			style={[styles.button, getButtonColor(), props.style]}>
+			<View style={styles.iconStyle}>{icon}</View>
 			<Text
 				variant="none"
 				color="none"
@@ -61,6 +64,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		backgroundColor: COLORS.main,
 		borderRadius: 25,
+		flexDirection: 'row',
 	},
 	text: {
 		fontWeight: 'bold',
@@ -71,6 +75,9 @@ const styles = StyleSheet.create({
 	activityIndicator: {
 		marginTop: -3,
 		paddingLeft: 5,
+	},
+	iconStyle: {
+		marginRight: 5,
 	},
 });
 
