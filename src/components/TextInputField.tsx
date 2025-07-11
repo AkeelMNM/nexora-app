@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react';
 import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
 import { Text } from './Text';
 import { ErrorText } from './ErrorText';
+import { useThemeColor } from '../assets/theme/ThemeContext';
 
 interface CustomTextInputProps extends TextInputProps {
 	inputFieldType: 'underline' | 'full';
@@ -14,6 +15,18 @@ const TextInputField = forwardRef<TextInput, CustomTextInputProps>(
 		{ inputFieldType, title, errorMessage, ...props }: CustomTextInputProps,
 		ref,
 	) => {
+		const theme = useThemeColor();
+
+		const dynamicStyle = {
+			text: {
+				color: theme('text_primary'),
+			},
+			border: {
+				borderColor: theme('border_primary'),
+			},
+			palaceHolder: theme('text_primary'),
+		};
+
 		const getInputFieldTypeStyle = () => {
 			switch (inputFieldType) {
 				case 'underline':
@@ -32,9 +45,14 @@ const TextInputField = forwardRef<TextInput, CustomTextInputProps>(
 				)}
 				<TextInput
 					ref={ref}
-					placeholderTextColor="#666666"
+					placeholderTextColor={dynamicStyle.palaceHolder}
 					{...props}
-					style={[getInputFieldTypeStyle(), props.style]}
+					style={[
+						getInputFieldTypeStyle(),
+						dynamicStyle.text,
+						dynamicStyle.border,
+						props.style,
+					]}
 				/>
 				{errorMessage && (
 					<ErrorText isVisible={true} errorText={errorMessage} />

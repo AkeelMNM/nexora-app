@@ -6,6 +6,7 @@ import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, CustomIcon, Text, TextInputField } from '../components';
 import { ErrorText } from '../components/ErrorText';
 import { COLORS } from '../assets/theme/colors';
+import { useThemeColor } from '../assets/theme/ThemeContext';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<
 	RootStackParamsList,
@@ -13,11 +14,23 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 function Login() {
+	const theme = useThemeColor();
 	const navigation = useNavigation<LoginScreenNavigationProp>();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
 	// const [hidePassword, setHidePassword] = useState(true);
+
+	const dynamicStyle = {
+		mainContainer: {
+			backgroundColor: theme('container_primary'),
+		},
+		border: {
+			borderColor: theme('border_primary'),
+		},
+		iconColor: theme('icon_primary'),
+		buttonColor: theme('container_primary'),
+	};
 
 	function validateInput() {
 		if (email === '' && password === '') {
@@ -49,15 +62,15 @@ function Login() {
 
 	return (
 		<SafeAreaView style={styles.safeAreaContainer}>
-			<View style={styles.mainContainer}>
+			<View style={[styles.mainContainer, dynamicStyle.mainContainer]}>
 				<Text variant="title" color="main" style={styles.appText}>
 					NEXORA
 				</Text>
 				<View style={styles.signInTextContainer}>
-					<Text variant="headerOne" color="black">
+					<Text variant="headerOne" color="primary">
 						Sign In
 					</Text>
-					<Text variant="body" color="black">
+					<Text variant="body" color="primary">
 						Stay connected with the people
 					</Text>
 				</View>
@@ -89,7 +102,7 @@ function Login() {
 				)}
 				<View style={styles.orContainer}>
 					<View style={styles.line} />
-					<Text variant="body" color="black">
+					<Text variant="body" color="primary">
 						or
 					</Text>
 					<View style={styles.line} />
@@ -97,26 +110,42 @@ function Login() {
 				<View style={styles.signInOptionContainer}>
 					<Button
 						title={'Continue with Google'}
-						style={styles.signInOptionButton}
-						color={'white'}
-						icon={<CustomIcon name={'google'} color="black" />}
+						style={{
+							...styles.signInOptionButton,
+							...dynamicStyle.border,
+						}}
+						color={'themed'}
+						icon={
+							<CustomIcon
+								name={'google'}
+								color={dynamicStyle.iconColor}
+							/>
+						}
 					/>
 					<Button
 						title={'Sign in with Apple'}
-						color={'white'}
-						style={styles.signInOptionButton}
-						icon={<CustomIcon name={'apple'} color="black" />}
+						color={'themed'}
+						style={{
+							...styles.signInOptionButton,
+							...dynamicStyle.border,
+						}}
+						icon={
+							<CustomIcon
+								name={'apple'}
+								color={dynamicStyle.iconColor}
+							/>
+						}
 					/>
 				</View>
 				<View style={styles.bottomContainer}>
-					<Text variant="label" color="black">
+					<Text variant="label" color="primary">
 						New to Nexora?
 					</Text>
 					<TouchableOpacity
 						activeOpacity={0.7}
 						onPress={() => navigation.navigate('CreateAccount')}
 						style={styles.joinText}>
-						<Text variant="label" color="black">
+						<Text variant="label" color="primary">
 							Join now
 						</Text>
 					</TouchableOpacity>
@@ -179,7 +208,6 @@ const styles = StyleSheet.create({
 		height: 50,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#FFFFFF',
 		borderRadius: 25,
 		flexDirection: 'row',
 		borderWidth: 0.5,

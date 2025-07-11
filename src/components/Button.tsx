@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Text } from './Text';
 import { COLORS } from '../assets/theme/colors';
+import { useThemeColor } from '../assets/theme/ThemeContext';
 
 interface ButtonProps extends TouchableOpacityProps {
 	title: string;
@@ -17,10 +18,14 @@ interface ButtonProps extends TouchableOpacityProps {
 }
 
 function Button({ title, color, isLoading, icon, ...props }: ButtonProps) {
+	const theme = useThemeColor();
+
 	const getButtonColor = () => {
 		switch (color) {
 			case 'main':
 				return { backgroundColor: COLORS.main };
+			case 'themed':
+				return { backgroundColor: theme('container_primary') };
 			case 'white':
 				return { backgroundColor: '#FFFFFF' };
 			case 'black':
@@ -36,6 +41,8 @@ function Button({ title, color, isLoading, icon, ...props }: ButtonProps) {
 				return { color: '#000000' };
 			case 'black':
 				return { color: '#FFFFFF' };
+			case 'themed':
+				return { color: theme('text_primary') };
 		}
 	};
 	return (
