@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, TextProps, Text as Txt } from 'react-native';
 import { useThemeColor } from '../assets/theme/ThemeContext';
+import { COLORS } from '../assets/theme/colors';
 
 interface CustomTextProps extends TextProps {
 	children: React.ReactNode;
@@ -32,6 +33,8 @@ function Text({ children, variant, color, ...props }: CustomTextProps) {
 		switch (propColor) {
 			case 'primary':
 				return { color: theme('text_primary') };
+			case 'themeColor':
+				return { color: COLORS.main };
 			case 'black':
 				return { color: '#000000' };
 			case 'white':
