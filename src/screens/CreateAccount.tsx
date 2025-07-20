@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import {
 	KeyboardAvoidingView,
 	Platform,
-	SafeAreaView,
 	ScrollView,
 	StyleSheet,
 	TouchableOpacity,
@@ -23,9 +22,9 @@ import DateTimePicker, {
 } from '@react-native-community/datetimepicker';
 import { formateDate } from '../utils/Helpers';
 import { useThemeColor } from '../assets/theme/ThemeContext';
-import useSafeAreaStyle from '../utils/SafeAreaViewUtil';
 import { IPhoneInputStyles } from 'react-native-international-phone-number/lib/interfaces/phoneInputStyles';
 import { IModalStyles } from 'react-native-international-phone-number/lib/interfaces/modalStyles';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type CreateAccountScreenNavigationProp = NativeStackNavigationProp<
 	RootStackParamsList,
@@ -35,7 +34,6 @@ type CreateAccountScreenNavigationProp = NativeStackNavigationProp<
 function CreateAccount() {
 	const navigation = useNavigation<CreateAccountScreenNavigationProp>();
 	const theme = useThemeColor();
-	const safeAreaStyle = useSafeAreaStyle(true);
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [phone, setPhone] = useState('');
@@ -50,7 +48,6 @@ function CreateAccount() {
 	const dynamicStyle = {
 		mainContainer: {
 			backgroundColor: theme('container_primary'),
-			...safeAreaStyle,
 		},
 		text: {
 			color: theme('text_primary'),
@@ -107,87 +104,91 @@ function CreateAccount() {
 	}
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-			style={[styles.keyboardAvoiding, dynamicStyle.mainContainer]}>
-			<ScrollView
-				contentContainerStyle={styles.scrollContainer}
-				keyboardShouldPersistTaps="handled">
-				<View style={[styles.mainContainer]}>
-					<View style={styles.topContainer}>
-						<Text variant="headerOne" color="primary">
-							Sign Up
-						</Text>
-						<View style={styles.signInTextContainer}>
-							<Text variant="label" color="primary">
-								Already have an account?
+		<SafeAreaView
+			style={[styles.safeAreaContainer, dynamicStyle.mainContainer]}>
+			<KeyboardAvoidingView
+				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+				keyboardVerticalOffset={0}
+				style={styles.safeAreaContainer}>
+				<ScrollView
+					contentContainerStyle={styles.scrollContainer}
+					keyboardShouldPersistTaps="handled">
+					<View style={styles.mainContainer}>
+						<View style={styles.topContainer}>
+							<Text variant="headerOne" color="primary">
+								Sign Up
 							</Text>
-							<TouchableOpacity
-								activeOpacity={0.7}
-								style={styles.signInText}>
+							<View style={styles.signInTextContainer}>
 								<Text variant="label" color="primary">
-									Sign In
+									Already have an account?
 								</Text>
-							</TouchableOpacity>
+								<TouchableOpacity
+									activeOpacity={0.7}
+									style={styles.signInText}>
+									<Text variant="label" color="primary">
+										Sign In
+									</Text>
+								</TouchableOpacity>
+							</View>
 						</View>
+						<View style={styles.inputContainer}>
+							<TextInputField
+								placeholder={'Name'}
+								inputFieldType={'full'}
+								onChangeText={text => setName(text)}
+							/>
+							<TextInputField
+								placeholder={'Email'}
+								inputFieldType={'full'}
+								onChangeText={text => setEmail(text)}
+							/>
+							<PhoneInput
+								value={phone}
+								onChangePhoneNumber={text => setPhone(text)}
+								selectedCountry={selectedCountry}
+								onChangeSelectedCountry={country =>
+									setSelectedCountry(country)
+								}
+								placeholder="Phone number"
+								phoneInputStyles={phoneInputStyle}
+								placeholderTextColor={dynamicStyle.palaceHolder}
+								modalStyles={modalStyle}
+							/>
+							<TextInputField
+								placeholder={'Date of Birth'}
+								inputFieldType={'full'}
+								value={formateDate(dob)}
+								onPressIn={() => setShowDatePicker(true)}
+							/>
+							<SecureTextInputField
+								placeholder={'Password'}
+								secureTextEntry={true}
+								onChangeText={text => setPassword(text)}
+								isPasswordVisible={hidePassword}
+								togglePasswordVisibility={() =>
+									setHidePassword(!hidePassword)
+								}
+							/>
+						</View>
+						<Button title={'Register'} onPress={onRegisterUser} />
 					</View>
-					<View style={styles.inputContainer}>
-						<TextInputField
-							placeholder={'Name'}
-							inputFieldType={'full'}
-							onChangeText={text => setName(text)}
-						/>
-						<TextInputField
-							placeholder={'Email'}
-							inputFieldType={'full'}
-							onChangeText={text => setEmail(text)}
-						/>
-						<PhoneInput
-							value={phone}
-							onChangePhoneNumber={text => setPhone(text)}
-							selectedCountry={selectedCountry}
-							onChangeSelectedCountry={country =>
-								setSelectedCountry(country)
-							}
-							placeholder="Phone number"
-							phoneInputStyles={phoneInputStyle}
-							placeholderTextColor={dynamicStyle.palaceHolder}
-							modalStyles={modalStyle}
-						/>
-						<TextInputField
-							placeholder={'Date of Birth'}
-							inputFieldType={'full'}
-							value={formateDate(dob)}
-							onPressIn={() => setShowDatePicker(true)}
-						/>
-						<SecureTextInputField
-							placeholder={'Password'}
-							secureTextEntry={true}
-							onChangeText={text => setPassword(text)}
-							isPasswordVisible={hidePassword}
-							togglePasswordVisibility={() =>
-								setHidePassword(!hidePassword)
-							}
-						/>
-					</View>
-					<Button title={'Register'} onPress={onRegisterUser} />
-				</View>
-			</ScrollView>
-			{showDatePicker && (
-				<DateTimePicker
-					testID="dateTimePicker"
-					value={dob}
-					mode="date"
-					display="default"
-					onChange={onChangeDate}
-				/>
-			)}
-		</KeyboardAvoidingView>
+				</ScrollView>
+				{showDatePicker && (
+					<DateTimePicker
+						testID="dateTimePicker"
+						value={dob}
+						mode="date"
+						display="default"
+						onChange={onChangeDate}
+					/>
+				)}
+			</KeyboardAvoidingView>
+		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
-	keyboardAvoiding: {
+	safeAreaContainer: {
 		flex: 1,
 	},
 	scrollContainer: {

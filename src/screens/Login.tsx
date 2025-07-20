@@ -20,7 +20,7 @@ import {
 import { ErrorText } from '../components/ErrorText';
 import { COLORS } from '../assets/theme/colors';
 import { useThemeColor } from '../assets/theme/ThemeContext';
-import useSafeAreaStyle from '../utils/SafeAreaViewUtil';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<
 	RootStackParamsList,
@@ -29,7 +29,6 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<
 
 function Login() {
 	const theme = useThemeColor();
-	const safeAreaStyle = useSafeAreaStyle(true);
 	const navigation = useNavigation<LoginScreenNavigationProp>();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -39,7 +38,6 @@ function Login() {
 	const dynamicStyle = {
 		mainContainer: {
 			backgroundColor: theme('container_primary'),
-			...safeAreaStyle, // Style of safeAreaView
 		},
 		border: {
 			borderColor: theme('border_primary'),
@@ -77,112 +75,118 @@ function Login() {
 	}
 
 	return (
-		<KeyboardAvoidingView
-			style={styles.safeAreaContainer}
-			behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-			<View style={[styles.mainContainer, dynamicStyle.mainContainer]}>
-				<ScrollView style={styles.scrollContainer}>
-					<Text
-						variant="title"
-						color="themeColor"
-						style={styles.appText}>
-						NEXORA
-					</Text>
-					<View style={styles.signInTextContainer}>
-						<Text variant="headerOne" color="primary">
-							Sign In
+		<SafeAreaView
+			style={[styles.safeAreaContainer, dynamicStyle.mainContainer]}>
+			<KeyboardAvoidingView
+				keyboardVerticalOffset={0}
+				style={styles.safeAreaContainer}
+				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+				<View style={styles.mainContainer}>
+					<ScrollView style={styles.scrollContainer}>
+						<Text
+							variant="title"
+							color="themeColor"
+							style={styles.appText}>
+							NEXORA
 						</Text>
-						<Text variant="body" color="primary">
-							Stay connected with the people
-						</Text>
-					</View>
-					<View style={styles.inputContainer}>
-						<TextInputField
-							placeholder={'Email or Phone'}
-							inputFieldType={'full'}
-							onChangeText={text => setEmail(text)}
-						/>
-						<SecureTextInputField
-							placeholder={'Password'}
-							secureTextEntry={true}
-							onChangeText={text => setPassword(text)}
-							isPasswordVisible={hidePassword}
-							togglePasswordVisibility={() => {
-								console.log('ss');
+						<View style={styles.signInTextContainer}>
+							<Text variant="headerOne" color="primary">
+								Sign In
+							</Text>
+							<Text variant="body" color="primary">
+								Stay connected with the people
+							</Text>
+						</View>
+						<View style={styles.inputContainer}>
+							<TextInputField
+								placeholder={'Email or Phone'}
+								inputFieldType={'full'}
+								onChangeText={text => setEmail(text)}
+							/>
+							<SecureTextInputField
+								placeholder={'Password'}
+								secureTextEntry={true}
+								onChangeText={text => setPassword(text)}
+								isPasswordVisible={hidePassword}
+								togglePasswordVisibility={() => {
+									console.log('ss');
 
-								setHidePassword(!hidePassword);
-							}}
-						/>
-					</View>
-					<TouchableOpacity
-						activeOpacity={0.7}
-						style={styles.forgotPassword}>
-						<Text variant="label" color="black">
-							Forgot Password?
-						</Text>
-					</TouchableOpacity>
-					<Button title={'Login'} onPress={onLogin} />
-					{errorMsg && (
-						<View style={styles.errorContainer}>
-							<ErrorText
-								isVisible={!errorMsg}
-								errorText={errorMsg}
+									setHidePassword(!hidePassword);
+								}}
 							/>
 						</View>
-					)}
-					<View style={styles.orContainer}>
-						<View style={styles.line} />
-						<Text variant="body" color="primary">
-							or
-						</Text>
-						<View style={styles.line} />
-					</View>
-					<View style={styles.signInOptionContainer}>
-						<Button
-							title={'Continue with Google'}
-							style={{
-								...styles.signInOptionButton,
-								...dynamicStyle.border,
-							}}
-							color={'themed'}
-							icon={
-								<CustomIcon
-									name={'google'}
-									color={dynamicStyle.iconColor}
-								/>
-							}
-						/>
-						<Button
-							title={'Sign in with Apple'}
-							color={'themed'}
-							style={{
-								...styles.signInOptionButton,
-								...dynamicStyle.border,
-							}}
-							icon={
-								<CustomIcon
-									name={'apple'}
-									color={dynamicStyle.iconColor}
-								/>
-							}
-						/>
-					</View>
-					<View style={styles.bottomContainer}>
-						<Text variant="label" color="primary">
-							New to Nexora?
-						</Text>
 						<TouchableOpacity
 							activeOpacity={0.7}
-							onPress={() => navigation.navigate('OtpScreen')}
-							style={styles.joinText}>
-							<Text variant="label" color="themeColor">
-								Join now
+							style={styles.forgotPassword}>
+							<Text variant="label" color="black">
+								Forgot Password?
 							</Text>
 						</TouchableOpacity>
-					</View>
-				</ScrollView>
-			</View>
-		</KeyboardAvoidingView>
+						<Button title={'Login'} onPress={onLogin} />
+						{errorMsg && (
+							<View style={styles.errorContainer}>
+								<ErrorText
+									isVisible={!errorMsg}
+									errorText={errorMsg}
+								/>
+							</View>
+						)}
+						<View style={styles.orContainer}>
+							<View style={styles.line} />
+							<Text variant="body" color="primary">
+								or
+							</Text>
+							<View style={styles.line} />
+						</View>
+						<View style={styles.signInOptionContainer}>
+							<Button
+								title={'Continue with Google'}
+								style={{
+									...styles.signInOptionButton,
+									...dynamicStyle.border,
+								}}
+								color={'themed'}
+								icon={
+									<CustomIcon
+										name={'google'}
+										color={dynamicStyle.iconColor}
+									/>
+								}
+							/>
+							<Button
+								title={'Sign in with Apple'}
+								color={'themed'}
+								style={{
+									...styles.signInOptionButton,
+									...dynamicStyle.border,
+								}}
+								icon={
+									<CustomIcon
+										name={'apple'}
+										color={dynamicStyle.iconColor}
+									/>
+								}
+							/>
+						</View>
+						<View style={styles.bottomContainer}>
+							<Text variant="label" color="primary">
+								New to Nexora?
+							</Text>
+							<TouchableOpacity
+								activeOpacity={0.7}
+								onPress={() =>
+									navigation.navigate('CreateAccount')
+								}
+								style={styles.joinText}>
+								<Text variant="label" color="themeColor">
+									Join now
+								</Text>
+							</TouchableOpacity>
+						</View>
+					</ScrollView>
+				</View>
+			</KeyboardAvoidingView>
+		</SafeAreaView>
 	);
 }
 

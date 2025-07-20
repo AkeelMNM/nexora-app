@@ -9,12 +9,12 @@ import {
 	View,
 } from 'react-native';
 import { useThemeColor } from '../assets/theme/ThemeContext';
-import useSafeAreaStyle from '../utils/SafeAreaViewUtil';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamsList } from '../navigation/RootStackParamsList';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from '../assets/theme/colors';
 import { Button, Text } from '../components';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type OtpScreenNavigationProp = NativeStackNavigationProp<
 	RootStackParamsList,
@@ -94,7 +94,6 @@ function OtpInput({ codes, refs, errorMessage, onChangeCode }: OtpInputProps) {
 
 function OtpScreen() {
 	const theme = useThemeColor();
-	const safeAreaStyle = useSafeAreaStyle(true);
 	const navigation = useNavigation<OtpScreenNavigationProp>();
 	const [codes, setCodes] = useState<string[]>(Array(6).fill(''));
 	const refs: RefObject<TextInput | null>[] = [
@@ -110,7 +109,6 @@ function OtpScreen() {
 	const dynamicStyle = {
 		mainContainer: {
 			backgroundColor: theme('container_primary'),
-			...safeAreaStyle,
 		},
 		text: {
 			color: theme('text_primary'),
@@ -137,45 +135,48 @@ function OtpScreen() {
 	function onResendOTP() {}
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-			style={[styles.keyboardAvoiding, dynamicStyle.mainContainer]}>
-			<ScrollView contentContainerStyle={styles.scrollContainer}>
-				<View style={styles.mainContainer}>
-					<Text variant="headerOne" color="primary">
-						Verify phone number
-					</Text>
-					<View style={styles.textContainer}>
-						<Text variant="inputLabel" color="primary">
-							Enter verification code
+		<SafeAreaView
+			style={[styles.safeAreaContainer, dynamicStyle.mainContainer]}>
+			<KeyboardAvoidingView
+				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+				style={styles.safeAreaContainer}>
+				<ScrollView contentContainerStyle={styles.scrollContainer}>
+					<View style={styles.mainContainer}>
+						<Text variant="headerOne" color="primary">
+							Verify phone number
 						</Text>
-						<Text variant="label" color="primary">
-							We just texted the code to your phone number
-						</Text>
+						<View style={styles.textContainer}>
+							<Text variant="inputLabel" color="primary">
+								Enter verification code
+							</Text>
+							<Text variant="label" color="primary">
+								We just texted the code to your phone number
+							</Text>
+						</View>
+						<OtpInput
+							codes={codes}
+							onChangeCode={onChangeCode}
+							refs={refs}
+							errorMessage={errorMessage}
+						/>
+						<TouchableOpacity
+							activeOpacity={0.7}
+							onPress={onResendOTP}
+							style={styles.resendText}>
+							<Text variant="label" color="themeColor">
+								Resend Code
+							</Text>
+						</TouchableOpacity>
 					</View>
-					<OtpInput
-						codes={codes}
-						onChangeCode={onChangeCode}
-						refs={refs}
-						errorMessage={errorMessage}
-					/>
-					<TouchableOpacity
-						activeOpacity={0.7}
-						onPress={onResendOTP}
-						style={styles.resendText}>
-						<Text variant="label" color="themeColor">
-							Resend Code
-						</Text>
-					</TouchableOpacity>
-				</View>
-				<Button title={'Confirm'} onPress={onConfirmOTP} />
-			</ScrollView>
-		</KeyboardAvoidingView>
+					<Button title={'Confirm'} onPress={onConfirmOTP} />
+				</ScrollView>
+			</KeyboardAvoidingView>
+		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
-	keyboardAvoiding: {
+	safeAreaContainer: {
 		flex: 1,
 	},
 	scrollContainer: {
