@@ -21,6 +21,7 @@ import { ErrorText } from '../components/ErrorText';
 import { COLORS } from '../assets/theme/colors';
 import { useThemeColor } from '../assets/theme/ThemeContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LoginUserAccount } from '../services/UserService';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<
 	RootStackParamsList,
@@ -65,12 +66,13 @@ function Login() {
 		return true;
 	}
 
-	function onLogin() {
+	async function onLogin() {
 		const isInputValidated = validateInput();
 		if (!isInputValidated) {
 			return;
 		}
 
+		const response = await LoginUserAccount(email, password);
 		navigation.navigate('NewsFeed');
 	}
 

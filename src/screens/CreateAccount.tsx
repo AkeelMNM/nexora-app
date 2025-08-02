@@ -25,6 +25,8 @@ import { useThemeColor } from '../assets/theme/ThemeContext';
 import { IPhoneInputStyles } from 'react-native-international-phone-number/lib/interfaces/phoneInputStyles';
 import { IModalStyles } from 'react-native-international-phone-number/lib/interfaces/modalStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ErrorText } from '../components/ErrorText';
+import { CreateUserAccount } from '../services/UserService';
 
 type CreateAccountScreenNavigationProp = NativeStackNavigationProp<
 	RootStackParamsList,
@@ -44,6 +46,13 @@ function CreateAccount() {
 		null,
 	);
 	const [showDatePicker, setShowDatePicker] = useState(false);
+	const [nameError, setNameError] = useState<string | undefined>(undefined);
+	const [emailError, setEmailError] = useState<string | undefined>(undefined);
+	const [phoneError, setPhoneError] = useState<string | undefined>(undefined);
+	const [dobError, setDobError] = useState<string | undefined>(undefined);
+	const [passwordError, setPasswordError] = useState<string | undefined>(
+		undefined,
+	);
 
 	const dynamicStyle = {
 		mainContainer: {
@@ -97,10 +106,53 @@ function CreateAccount() {
 		setDob(currentDate);
 	}
 
-	function onRegisterUser() {
-		//Step 1: after click register store user details (current screen)
+	function validateInput() {
+		if (!name || name === '') {
+			setNameError('Please enter name');
+			return false;
+		}
+
+		if (!email || email === '') {
+			setEmailError('Please enter email');
+			return false;
+		}
+
+		if (!phone || phone === '') {
+			setPhoneError('Please enter phone number');
+			return false;
+		}
+
+		if (!dob) {
+			setDobError('Please enter password');
+			return false;
+		}
+
+		if (!password || password === '') {
+			setPasswordError('Please enter password');
+			return false;
+		}
+
+		return true;
+	}
+
+	async function onRegisterUser() {
+		const isInputValidated = validateInput();
+		if (!isInputValidated) {
+			return;
+		}
+
+		const account = {
+			name,
+			email,
+			phone,
+			dob,
+			password,
+		};
+
+		const response = await CreateUserAccount(account);
+
 		//Step 2: navigate otp screen ask otp from phone (otp screen)
-		//Step 3: ask to add password to account from the user (password screen)
+		//Step 3: Navigate to login (login screen)
 	}
 
 	return (
@@ -136,11 +188,13 @@ function CreateAccount() {
 								placeholder={'Name'}
 								inputFieldType={'full'}
 								onChangeText={text => setName(text)}
+								errorMessage={nameError}
 							/>
 							<TextInputField
 								placeholder={'Email'}
 								inputFieldType={'full'}
 								onChangeText={text => setEmail(text)}
+								errorMessage={emailError}
 							/>
 							<PhoneInput
 								value={phone}
@@ -154,11 +208,18 @@ function CreateAccount() {
 								placeholderTextColor={dynamicStyle.palaceHolder}
 								modalStyles={modalStyle}
 							/>
+							{phoneError && (
+								<ErrorText
+									isVisible={true}
+									errorText={phoneError}
+								/>
+							)}
 							<TextInputField
 								placeholder={'Date of Birth'}
 								inputFieldType={'full'}
 								value={formateDate(dob)}
 								onPressIn={() => setShowDatePicker(true)}
+								errorMessage={dobError}
 							/>
 							<SecureTextInputField
 								placeholder={'Password'}
@@ -168,6 +229,7 @@ function CreateAccount() {
 								togglePasswordVisibility={() =>
 									setHidePassword(!hidePassword)
 								}
+								errorMessage={passwordError}
 							/>
 						</View>
 						<Button title={'Register'} onPress={onRegisterUser} />
