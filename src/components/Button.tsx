@@ -4,21 +4,28 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	TouchableOpacityProps,
+	View,
 } from 'react-native';
 import { Text } from './Text';
 import { COLORS } from '../assets/theme/colors';
+import { useThemeColor } from '../assets/theme/ThemeContext';
 
 interface ButtonProps extends TouchableOpacityProps {
 	title: string;
 	color?: string;
 	isLoading?: boolean;
+	icon?: React.ReactNode;
 }
 
-function Button({ title, color, isLoading, ...props }: ButtonProps) {
+function Button({ title, color, isLoading, icon, ...props }: ButtonProps) {
+	const theme = useThemeColor();
+
 	const getButtonColor = () => {
 		switch (color) {
 			case 'main':
 				return { backgroundColor: COLORS.main };
+			case 'themed':
+				return { backgroundColor: theme('container_primary') };
 			case 'white':
 				return { backgroundColor: '#FFFFFF' };
 			case 'black':
@@ -34,12 +41,15 @@ function Button({ title, color, isLoading, ...props }: ButtonProps) {
 				return { color: '#000000' };
 			case 'black':
 				return { color: '#FFFFFF' };
+			case 'themed':
+				return { color: theme('text_primary') };
 		}
 	};
 	return (
 		<TouchableOpacity
 			activeOpacity={0.7}
 			style={[styles.button, getButtonColor(), props.style]}>
+			<View style={styles.iconStyle}>{icon}</View>
 			<Text
 				variant="none"
 				color="none"
@@ -60,16 +70,21 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: COLORS.main,
+		borderRadius: 25,
+		flexDirection: 'row',
 	},
 	text: {
 		fontWeight: 'bold',
 		fontSize: 17,
-		color: '#000000',
+		color: '#FFFFFF',
 		textAlign: 'center',
 	},
 	activityIndicator: {
 		marginTop: -3,
 		paddingLeft: 5,
+	},
+	iconStyle: {
+		marginRight: 5,
 	},
 });
 

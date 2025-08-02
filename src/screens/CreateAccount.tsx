@@ -1,0 +1,280 @@
+import React, { useState } from 'react';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamsList } from '../navigation/RootStackParamsList';
+import { useNavigation } from '@react-navigation/native';
+import {
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
+	StyleSheet,
+	TouchableOpacity,
+	View,
+} from 'react-native';
+import {
+	Button,
+	SecureTextInputField,
+	Text,
+	TextInputField,
+} from '../components';
+import PhoneInput, { ICountry } from 'react-native-international-phone-number';
+import DateTimePicker, {
+	DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
+import { formateDate } from '../utils/Helpers';
+import { useThemeColor } from '../assets/theme/ThemeContext';
+import { IPhoneInputStyles } from 'react-native-international-phone-number/lib/interfaces/phoneInputStyles';
+import { IModalStyles } from 'react-native-international-phone-number/lib/interfaces/modalStyles';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ErrorText } from '../components/ErrorText';
+import { CreateUserAccount } from '../services/UserService';
+
+type CreateAccountScreenNavigationProp = NativeStackNavigationProp<
+	RootStackParamsList,
+	'CreateAccount'
+>;
+
+function CreateAccount() {
+	const navigation = useNavigation<CreateAccountScreenNavigationProp>();
+	const theme = useThemeColor();
+	const [name, setName] = useState('');
+	const [email, setEmail] = useState('');
+	const [phone, setPhone] = useState('');
+	const [dob, setDob] = useState(new Date());
+	const [password, setPassword] = useState('');
+	const [hidePassword, setHidePassword] = useState(true);
+	const [selectedCountry, setSelectedCountry] = useState<ICountry | null>(
+		null,
+	);
+	const [showDatePicker, setShowDatePicker] = useState(false);
+	const [nameError, setNameError] = useState<string | undefined>(undefined);
+	const [emailError, setEmailError] = useState<string | undefined>(undefined);
+	const [phoneError, setPhoneError] = useState<string | undefined>(undefined);
+	const [dobError, setDobError] = useState<string | undefined>(undefined);
+	const [passwordError, setPasswordError] = useState<string | undefined>(
+		undefined,
+	);
+
+	const dynamicStyle = {
+		mainContainer: {
+			backgroundColor: theme('container_primary'),
+		},
+		text: {
+			color: theme('text_primary'),
+		},
+		border: {
+			borderColor: theme('border_primary'),
+		},
+		palaceHolder: theme('text_primary'),
+	};
+
+	const phoneInputStyle: IPhoneInputStyles = {
+		container: {
+			backgroundColor: theme('container_primary'),
+			borderColor: theme('border_primary'),
+			height: 55,
+			borderRadius: 5,
+		},
+		flagContainer: {
+			backgroundColor: theme('container_primary'),
+			...dynamicStyle.text,
+		},
+		flag: { ...dynamicStyle.text },
+		callingCode: { ...dynamicStyle.text },
+		caret: { ...dynamicStyle.text },
+	};
+
+	const modalStyle: IModalStyles = {
+		modal: {
+			backgroundColor: theme('container_primary'),
+		},
+		searchInput: {
+			backgroundColor: theme('container_primary'),
+			...dynamicStyle.text,
+		},
+		countryButton: {
+			backgroundColor: theme('container_primary'),
+			...dynamicStyle.text,
+		},
+	};
+
+	function onChangeDate(
+		event: DateTimePickerEvent,
+		selectedDate: Date | undefined,
+	) {
+		const currentDate = selectedDate || dob;
+		setShowDatePicker(Platform.OS === 'ios'); // Hide picker on Android after selection
+		setDob(currentDate);
+	}
+
+	function validateInput() {
+		if (!name || name === '') {
+			setNameError('Please enter name');
+			return false;
+		}
+
+		if (!email || email === '') {
+			setEmailError('Please enter email');
+			return false;
+		}
+
+		if (!phone || phone === '') {
+			setPhoneError('Please enter phone number');
+			return false;
+		}
+
+		if (!dob) {
+			setDobError('Please enter password');
+			return false;
+		}
+
+		if (!password || password === '') {
+			setPasswordError('Please enter password');
+			return false;
+		}
+
+		return true;
+	}
+
+	async function onRegisterUser() {
+		const isInputValidated = validateInput();
+		if (!isInputValidated) {
+			return;
+		}
+
+		const account = {
+			name,
+			email,
+			phone,
+			dob,
+			password,
+		};
+
+		const response = await CreateUserAccount(account);
+
+		//Step 2: navigate otp screen ask otp from phone (otp screen)
+		//Step 3: Navigate to login (login screen)
+	}
+
+	return (
+		<SafeAreaView
+			style={[styles.safeAreaContainer, dynamicStyle.mainContainer]}>
+			<KeyboardAvoidingView
+				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+				keyboardVerticalOffset={0}
+				style={styles.safeAreaContainer}>
+				<ScrollView
+					contentContainerStyle={styles.scrollContainer}
+					keyboardShouldPersistTaps="handled">
+					<View style={styles.mainContainer}>
+						<View style={styles.topContainer}>
+							<Text variant="headerOne" color="primary">
+								Sign Up
+							</Text>
+							<View style={styles.signInTextContainer}>
+								<Text variant="label" color="primary">
+									Already have an account?
+								</Text>
+								<TouchableOpacity
+									activeOpacity={0.7}
+									style={styles.signInText}>
+									<Text variant="label" color="primary">
+										Sign In
+									</Text>
+								</TouchableOpacity>
+							</View>
+						</View>
+						<View style={styles.inputContainer}>
+							<TextInputField
+								placeholder={'Name'}
+								inputFieldType={'full'}
+								onChangeText={text => setName(text)}
+								errorMessage={nameError}
+							/>
+							<TextInputField
+								placeholder={'Email'}
+								inputFieldType={'full'}
+								onChangeText={text => setEmail(text)}
+								errorMessage={emailError}
+							/>
+							<PhoneInput
+								value={phone}
+								onChangePhoneNumber={text => setPhone(text)}
+								selectedCountry={selectedCountry}
+								onChangeSelectedCountry={country =>
+									setSelectedCountry(country)
+								}
+								placeholder="Phone number"
+								phoneInputStyles={phoneInputStyle}
+								placeholderTextColor={dynamicStyle.palaceHolder}
+								modalStyles={modalStyle}
+							/>
+							{phoneError && (
+								<ErrorText
+									isVisible={true}
+									errorText={phoneError}
+								/>
+							)}
+							<TextInputField
+								placeholder={'Date of Birth'}
+								inputFieldType={'full'}
+								value={formateDate(dob)}
+								onPressIn={() => setShowDatePicker(true)}
+								errorMessage={dobError}
+							/>
+							<SecureTextInputField
+								placeholder={'Password'}
+								secureTextEntry={true}
+								onChangeText={text => setPassword(text)}
+								isPasswordVisible={hidePassword}
+								togglePasswordVisibility={() =>
+									setHidePassword(!hidePassword)
+								}
+								errorMessage={passwordError}
+							/>
+						</View>
+						<Button title={'Register'} onPress={onRegisterUser} />
+					</View>
+				</ScrollView>
+				{showDatePicker && (
+					<DateTimePicker
+						testID="dateTimePicker"
+						value={dob}
+						mode="date"
+						display="default"
+						onChange={onChangeDate}
+					/>
+				)}
+			</KeyboardAvoidingView>
+		</SafeAreaView>
+	);
+}
+
+const styles = StyleSheet.create({
+	safeAreaContainer: {
+		flex: 1,
+	},
+	scrollContainer: {
+		flexGrow: 1,
+	},
+	mainContainer: {
+		flex: 1,
+		padding: 16,
+	},
+	topContainer: {
+		marginVertical: 10,
+	},
+	signInTextContainer: {
+		flexDirection: 'row',
+		marginTop: 5,
+	},
+	signInText: {
+		marginLeft: 5,
+	},
+	inputContainer: {
+		marginTop: 10,
+		marginBottom: 25,
+		rowGap: 20,
+	},
+});
+
+export default CreateAccount;

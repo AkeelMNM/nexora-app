@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleProp, TextStyle } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface CustomIconProps {
 	name: string;
-	size: number;
-	color: string;
-	style: StyleProp<TextStyle>;
+	size?: number;
+	color?: string;
+	style?: StyleProp<TextStyle>;
 }
 
 function CustomIcon({
